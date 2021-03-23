@@ -27,23 +27,24 @@ def __getter(k, v):
     return attr
 
 
-def _pythonization(self, *args, **kwargs):
-    """
-    Docstring
-    """
-    # Pythonized functions redefinition for keyword arguments.
-    # the keywords must correspond to the CmdArg of the provided function.
-    # Parameters:
-    # self: instance of class provided
-    # *args: arguments passed
-    # **kwargs: keyword arguments pased
-    if not kwargs:
-        return self._OriginalFunction(*args)
-    else:
-        nargs = args + tuple((__getter(k, v) for k, v in kwargs.items()))
-        return self._OriginalFunction(*nargs)
-
 
 def _pythonizedFunction(klass,function):
-    klass._OriginalFunction = getattr(klass,function)
+    setattr(klass,'_OriginalFunction'+function,getattr(klass,function))
+
+    def _pythonization(self, *args, **kwargs):
+        """
+        Docstring
+        """
+        # Pythonized functions redefinition for keyword arguments.
+        # # the keywords must correspond to the CmdArg of the provided function.
+        # # Parameters:
+        # # self: instance of class provided
+        # # *args: arguments passed
+        # # **kwargs: keyword arguments pased
+        if not kwargs:
+            return getattr(self,'_OriginalFunction'+function)(*args)
+        else:
+            nargs = args + tuple((__getter(k, v) for k, v in kwargs.items()))
+            return getattr(self,'_OriginalFunction'+function)(*nargs)
+
     return _pythonization

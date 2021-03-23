@@ -1,10 +1,6 @@
-import cppyy
-
-from ROOT import pythonization
 from ._roofit import _pythonizedFunction
 
 
-@pythonization()
 def pythonize_rooabspdf(klass, name):
     # Parameters:
     # klass: class to be pythonized
