@@ -18,7 +18,7 @@
 #include "TSystem.h"
 
 using namespace TMVA;
-
+using namespace TMVA::Experimental;
 namespace TMVA {
 namespace Internal {
 class PyGILRAII {
@@ -801,4 +801,23 @@ TString MethodPyKeras::GetKerasBackendName()  {
    if (type == kTheano) return "Theano";
    if (type == kCNTK) return "CNTK";
    return "Undefined";
+}
+
+std::vector<RTensor<float>> MethodPyKeras:: ReadWeights(TString path){
+     PyRunString("from keras.models import load_model");
+     PyRunString(TString::Format("model=load_model('%s')",path.Data()));
+     PyRunString(TString::Format("model.load_weights('%s')",path.Data()));
+     PyRunString("weights=model.get_weights()");
+     PyObject* pWeights = PyDict_GetItemString(fLocalNS, "weights");
+     Py_ssize_t i, n;
+     PyObject *item;
+     n = PyList_Size(pweights);
+     std::vector<RTensor<float>>weights;
+     for (i = 0; i < n; i++) {
+       item = PyList_GetItem(list, i);
+       PyArrayObject* weightArray = (PyArrayObject*)item;
+       weights.push_back(RTensor<float>x((Value_t*)weightArray,std::vector<std::size_t>shape{(std::size_t)*(PyArray_SHAPE(weightArray))}));
+     }
+
+     return weights;
 }
