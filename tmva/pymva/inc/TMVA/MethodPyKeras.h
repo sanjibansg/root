@@ -27,6 +27,7 @@
 #define ROOT_TMVA_MethodPyKeras
 
 #include "TMVA/PyMethodBase.h"
+#include "TMVA/RTensor.hxx"
 #include <vector>
 
 namespace TMVA {
@@ -78,6 +79,8 @@ namespace TMVA {
       TString GetKerasBackendName();
       // flag to indicate we are using the Keras shipped with Tensorflow 2
       Bool_t UseTFKeras() const { return fUseTFKeras; }
+      
+      std::vector<TMVA::Experimental::RTensor<float>> ReadWeights(TString);
 
    private:
 

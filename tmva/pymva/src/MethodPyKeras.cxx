@@ -804,20 +804,42 @@ TString MethodPyKeras::GetKerasBackendName()  {
 }
 
 std::vector<RTensor<float>> MethodPyKeras:: ReadWeights(TString path){
+
+     //Reading the Keras model
      PyRunString("from keras.models import load_model");
      PyRunString(TString::Format("model=load_model('%s')",path.Data()));
      PyRunString(TString::Format("model.load_weights('%s')",path.Data()));
      PyRunString("weights=model.get_weights()");
+
+     //model.get_weights() returns weights in list of numpy array format
      PyObject* pWeights = PyDict_GetItemString(fLocalNS, "weights");
      Py_ssize_t i, n;
      PyObject *item;
-     n = PyList_Size(pweights);
+     n = PyList_Size(pWeights);
      std::vector<RTensor<float>>weights;
      for (i = 0; i < n; i++) {
-       item = PyList_GetItem(list, i);
+       item = PyList_GetItem(pWeights, i);
        PyArrayObject* weightArray = (PyArrayObject*)item;
-       weights.push_back(RTensor<float>x((Value_t*)weightArray,std::vector<std::size_t>shape{(std::size_t)*(PyArray_SHAPE(weightArray))}));
+       std::vector<std::size_t>shape;
+       std::vector<std::size_t>strides;
+
+       //Preparing the shape vector
+       for(npy_intp* j=PyArray_SHAPE(weightArray); j<PyArray_SHAPE(weightArray)+PyArray_NDIM(weightArray); ++j)
+       {
+          shape.push_back((std::size_t)(*j));
+       }
+
+       //Preparing the strides vector
+       for(npy_intp* k=PyArray_STRIDES(weightArray); k<PyArray_STRIDES(weightArray)+PyArray_NDIM(weightArray); ++k)
+       {
+          strides.push_back((std::size_t)(*k));
+       }
+
+       //Declaring the RTensor object for storing weights values.
+       RTensor<float>x((float*)PyArray_DATA(weightArray),shape,strides);
+       weights.push_back(x);
      }
 
      return weights;
 }
+
