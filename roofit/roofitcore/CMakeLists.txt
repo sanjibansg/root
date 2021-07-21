@@ -113,6 +113,7 @@ ROOT_STANDARD_LIBRARY_PACKAGE(RooFitCore
     RooGenFunction.h
     RooGenProdProj.h
     RooGlobalFunc.h
+    RooGradMinimizerFcn.h
     RooGrid.h
     RooHistError.h
     RooHistFunc.h
@@ -333,6 +334,7 @@ ROOT_STANDARD_LIBRARY_PACKAGE(RooFitCore
     src/RooGenFunction.cxx
     src/RooGenProdProj.cxx
     src/RooGlobalFunc.cxx
+    src/RooGradMinimizerFcn.cxx
     src/RooGrid.cxx
     src/RooHist.cxx
     src/RooHistError.cxx
@@ -458,6 +460,7 @@ ROOT_STANDARD_LIBRARY_PACKAGE(RooFitCore
     Matrix
     Tree
     Minuit
+    Minuit2
     RIO
     MathCore
     Foam
