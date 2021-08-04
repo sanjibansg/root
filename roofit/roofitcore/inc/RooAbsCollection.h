@@ -25,6 +25,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <type_traits>
 
 #include "ROOT/RSpan.hxx"
 
@@ -310,7 +311,7 @@ public:
   // For use in the RooArgList/Set(std::vector<RooAbsArgPtrOrDouble> const&) constructor.
   // Can be replaced with std::variant when C++17 is the minimum supported standard.
   struct RooAbsArgPtrOrDouble {
-    RooAbsArgPtrOrDouble(RooAbsArg * arg) : ptr{arg}, hasPtr{true} {}
+    RooAbsArgPtrOrDouble(RooAbsArg & arg) : ptr{&arg}, hasPtr{true} {}
     RooAbsArgPtrOrDouble(double x) : val{x}, hasPtr{false} {}
 
     RooAbsArg * ptr = nullptr;
@@ -344,6 +345,15 @@ protected:
 
   /// Determine whether it's possible to add a given RooAbsArg to the collection or not.
   virtual bool canBeAdded(const RooAbsArg& arg, bool silent) const = 0;
+
+  template<class T>
+  static void assert_is_no_temporary(T &&) {
+    static_assert(!std::is_rvalue_reference<T&&>::value,
+      "A reference to a temporary RooAbsArg will be passed to a RooAbsCollection constructor! "
+      "This is not allowed, because the collection will not own the arguments. "
+      "Hence, the collection will contain dangling pointers when the temporary goes out of scope."
+    );
+  }
 
 private:
   std::unique_ptr<LegacyIterator_t> makeLegacyIterator (bool forward = true) const;
