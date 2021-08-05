@@ -62,9 +62,9 @@ ROOT_ADD_GTEST(TestCustomModels TestCustomModels.cxx
 add_dependencies(TestCustomModels SofieCompileModels_ONNX)
 
 
-//For testing serialisation of RModel object
+# For testing serialisation of RModel object
 add_executable(sofiecFromROOT
-	EmitFromROOT.cxx
+	EmitFromRoot.cxx
 	../src/SOFIE_common.cxx
 	../src/RModel.cxx
 	${SOFIE_PARSERS_DIR}/src/RModelParser_ONNX.cxx
