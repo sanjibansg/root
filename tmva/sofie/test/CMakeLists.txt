@@ -49,7 +49,7 @@ foreach(onnx_file ${ONNX_FILES})
 		COMMAND ./sofiec ${onnx_file} ${CMAKE_CURRENT_BINARY_DIR}/${fname}.hxx
 		USES_TERMINAL
 	)
-endforeach() 
+endforeach()
 
 # Creating a Google Test
 ROOT_ADD_GTEST(TestCustomModels TestCustomModels.cxx
@@ -60,3 +60,49 @@ ROOT_ADD_GTEST(TestCustomModels TestCustomModels.cxx
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 add_dependencies(TestCustomModels SofieCompileModels_ONNX)
+
+
+//For testing serialisation of RModel object
+add_executable(sofiecFromROOT
+	EmitFromROOT.cxx
+	../src/SOFIE_common.cxx
+	../src/RModel.cxx
+	${SOFIE_PARSERS_DIR}/src/RModelParser_ONNX.cxx
+	${PROTO_SRCS}
+)
+target_include_directories(sofiecFromROOT PRIVATE
+  ../inc
+  ${SOFIE_PARSERS_DIR}/inc
+  ../../tmva/inc
+  ${CMAKE_CURRENT_BINARY_DIR}   # this is for the protobuf headerfile
+  ../../../core/foundation/inc
+  ${CMAKE_BINARY_DIR}/include   # this is for RConfigure.h
+)
+target_link_libraries(sofiecFromROOT ${Protobuf_LIBRARIES} ROOTTMVASofie)
+set_target_properties(sofiecFromROOT PROPERTIES
+  POSITION_INDEPENDENT_CODE TRUE)
+
+# Automatic compilation of headers from onnx files
+add_custom_target(SofieCompileModels_ONNX_FromROOT)
+add_dependencies(SofieCompileModels_ONNX_FromROOT sofiecFromROOT)
+
+# Finding .onnx files to be compiled and creating the appropriate command
+file(GLOB ONNX_FILES "${ONNX_MODELS_DIR}/*.onnx")
+foreach(onnx_file ${ONNX_FILES})
+	get_filename_component(fname ${onnx_file} NAME_WE)  # trim
+	get_filename_component(fdir ${onnx_file} DIRECTORY)
+	add_custom_command(TARGET SofieCompileModels_ONNX_FromROOT POST_BUILD
+		COMMAND ./sofiecFromROOT ${onnx_file} ${CMAKE_CURRENT_BINARY_DIR}/${fname}
+		USES_TERMINAL
+	)
+endforeach()
+
+# Creating a Google Test for Serialisation of RModel
+ROOT_ADD_GTEST(TestCustomModelsFromROOT TestCustomModelsFromROOT.cxx
+  LIBRARIES
+    ROOTTMVASofie
+    blas
+  INCLUDE_DIRS
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
+add_dependencies(TestCustomModelsFromROOT SofieCompileModels_ONNX_FromROOT) 
