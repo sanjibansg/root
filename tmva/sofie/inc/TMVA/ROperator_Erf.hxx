@@ -35,6 +35,10 @@ public:
       return ret;
    }
 
+   std::vector<std::string> GetOperatorOutputs(){
+      return {fNY};
+   }
+
    void Initialize(RModel& model){
        //input must be a graph input, or already initialized intermediate tensor
       if (model.CheckIfTensorAlreadyExist(fNX) == false){

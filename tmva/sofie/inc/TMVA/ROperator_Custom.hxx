@@ -39,6 +39,10 @@ public:
     std::vector<std::vector<size_t>> ShapeInference(std::vector<std::vector<size_t>>) {return {{}};};
     std::vector<ETensorType> TypeInference(std::vector<ETensorType>){ return {};};
 
+    std::vector<std::string> GetOperatorOutputs(){
+      return fOutputNames;
+    }
+
     void Initialize(RModel& model){
       model.AddNeededCustomHeader(fHeaderName);
       for(auto& it:fInputNames){

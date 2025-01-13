@@ -30,7 +30,7 @@ public:
    // generate session data members specific to operator
    virtual std::string GenerateSessionMembersCode(std::string /*opName*/) { return ""; }
    virtual std::string Header() { return "";}
-
+   virtual std::vector<std::string> GetOperatorOutputs() { return {}; }
 
    //virtual void Forward_reference() = 0;
    //virtual void Forward_blas() = 0;

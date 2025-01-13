@@ -34,6 +34,10 @@ private:
    std::vector<std::shared_ptr<RModel>> fSubGraphs;    ///<!  sub-graph models (transient)
    RModel * fParentGraph = nullptr;
 
+   IntermediateCapacity fIntermediateMemoryInfo;
+
+   std::unordered_map<std::string, IntermediateTensorLookupInfo> fIntermediateTensorLookup;
+
    const std::string SP = "   ";
 
 public:

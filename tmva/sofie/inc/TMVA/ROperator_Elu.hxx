@@ -46,6 +46,10 @@ public:
       return ret;
    }
 
+   std::vector<std::string> GetOperatorOutputs(){
+      return {fNY};
+   }
+
    void Initialize(RModel& model){
       if (model.CheckIfTensorAlreadyExist(fNX) == false){   //input must be a graph input, or already initialized intermediate tensor
          throw std::runtime_error("TMVA SOFIE Elu Op Input Tensor is not found in model");

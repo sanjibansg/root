@@ -67,6 +67,16 @@ struct DynamicTensorInfo{
    std::vector<Dim> shape;
 };
 
+struct IntermediateCapacity {
+      int total_memory;
+      int available_memory;
+};
+
+struct IntermediateTensorLookupInfo {
+      bool flag;
+      int count;
+};
+
 std::vector<Dim> ConvertShapeToDim(std::vector<size_t> shape);
 
 std::vector<size_t> ConvertShapeToInt(std::vector<Dim> shape);

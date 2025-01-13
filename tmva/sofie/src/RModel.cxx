@@ -163,6 +163,9 @@ void RModel::AddOperator(std::unique_ptr<ROperator> op, int order_execution) {
     } else {
         fOperators.push_back(std::move(op));
     }
+    for(auto& it:op->GetOperatorOutputs()){
+      AddIntermediateInputTensorCount(it);
+    }
 }
 
 void RModel::AddInitializedTensor(std::string tensor_name, ETensorType type, std::vector<std::size_t> shape, std::shared_ptr<void> data) {
@@ -197,6 +200,25 @@ bool RModel::IsDynamicTensor(const std::string& tensorName) const {
 bool RModel::IsInputTensor(const std::string& tensorName) const {
    std::string name = UTILITY::Clean_name(tensorName);
    return fInputTensorInfos.find(name) != fInputTensorInfos.end();
+}
+
+void RModel::EvaluateIntermediateMemory(std::string tensor_name, std::size_t size) {
+    auto& tensorInfo = fIntermediateTensorLookup[tensor_name];
+
+    if (--tensorInfo.count == 0) {
+        fIntermediateMemoryInfo.available_memory += size;
+    } else {
+        if (!tensorInfo.flag) {
+            if (fIntermediateMemoryInfo.available_memory > 0) {
+                size_t allocSize = std::min(size, fIntermediateMemoryInfo.available_memory);
+                fIntermediateMemoryInfo.total_memory += allocSize;
+                fIntermediateMemoryInfo.available_memory -= allocSize;
+            } else {
+                fIntermediateMemoryInfo.total_memory += size;
+            }
+            tensorInfo.flag = 1;
+        }
+    }
 }
 
 // generic addition of a tensor
@@ -237,6 +259,11 @@ void RModel::AddDynamicTensor(std::string tensor_name, ETensorType type, std::ve
       }
    }
 }
+
+void RModel::AddIntermediateInputTensorCount(std::string tensor_name){
+   fIntermediateTensorLookup[tensor_name].count++;
+}
+
 
 void RModel::AddOutputTensorNameList(std::vector<std::string> outputtensornames) {
     fOutputTensorNames.clear();
@@ -442,6 +469,10 @@ void RModel::GenerateInitializedTensorInfo() {
             }
          }
     }
+}
+
+void RModel::GenerateSessionMemoryPool() {
+   fGC += ""
 }
 
 void RModel::GenerateIntermediateTensorInfo() {
