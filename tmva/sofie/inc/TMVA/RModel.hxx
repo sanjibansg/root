@@ -161,6 +161,7 @@ protected:
    void GenerateIntermediateMemoryPool();
    // Generate all session code
    void GenerateSessionCode();
+   void CheckAndFuseOperators();
 
 public:
    const std::vector<std::string> &GetInputTensorNames() const { return fInputTensorNames; }
