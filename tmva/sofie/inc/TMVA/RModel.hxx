@@ -31,6 +31,7 @@ private:
    std::vector<std::string> fInputTensorNames; // input tensor names using ONNX order
 
    std::vector<std::unique_ptr<ROperator>> fOperators;
+   std::vector<std::unique_ptr<ROperator>> fConstantOperators;
 
    std::vector<std::shared_ptr<RModel>> fSubGraphs;    ///<!  sub-graph models (transient)
    RModel * fParentGraph = nullptr;
@@ -65,6 +66,7 @@ public:
       std::unique_ptr<ROperator> tmp(op);
       AddOperator(std::move(tmp), order_execution);
    }
+   void AddConstantOperator(std::unique_ptr<ROperator> op);
    void AddInitializedTensor(std::string tensor_name, ETensorType type, std::vector<std::size_t> shape,
                              std::shared_ptr<void> data);
    void AddConstantTensor(std::string tensor_name, ETensorType type, std::vector<std::size_t> shape,
