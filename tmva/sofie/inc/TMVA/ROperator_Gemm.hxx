@@ -66,6 +66,7 @@ namespace SOFIE{
          fActivation = activation;
          fType = "float";
 
+         fInputTensorNames = { fNA, fNB, fNC };
          fOutputTensorNames = { fNY };
       }
 
