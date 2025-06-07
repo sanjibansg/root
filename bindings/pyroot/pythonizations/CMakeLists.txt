@@ -57,6 +57,7 @@ if(tmva)
         ROOT/_pythonization/_tmva/_factory.py
         ROOT/_pythonization/_tmva/__init__.py
         ROOT/_pythonization/_tmva/_rbdt.py
+        ROOT/_pythonization/_tmva/_rmodel_keras.py
         ROOT/_pythonization/_tmva/_rtensor.py
         ROOT/_pythonization/_tmva/_tree_inference.py
         ROOT/_pythonization/_tmva/_utils.py
