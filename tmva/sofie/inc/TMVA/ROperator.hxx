@@ -22,7 +22,9 @@ enum class OperatorKind {
    RELU = 2,
    CONSTANT = 3,
    CONSTANTOFSHAPE = 4,
-   UNDEFINED = 5
+   UNDEFINED = 5,
+   CONV=6,
+   BATCHNORM=7
 };
 
 inline const char* toString(OperatorKind kind) {
@@ -32,11 +34,13 @@ inline const char* toString(OperatorKind kind) {
        case OperatorKind::RELU:       return "RELU";
        case OperatorKind::CONSTANT:       return "CONSTANT";
        case OperatorKind::CONSTANTOFSHAPE:       return "CONSTANTOFSHAPE";
+              case OperatorKind::BATCHNORM:       return "batchnorm";  
+                   case OperatorKind::CONV:       return "conv";
        case OperatorKind::UNDEFINED:  return "UNDEFINED";
        default:                       return "UNKNOWN";
    }
 }
-inline std::set<OperatorKind> FusableKinds = { OperatorKind::RELU, OperatorKind::LAYERNORM };
+inline std::set<OperatorKind> FusableKinds = { OperatorKind::RELU, OperatorKind::LAYERNORM, OperatorKind::BATCHNORM};
 
 class ROperator{
 
@@ -70,15 +74,15 @@ protected:
    bool fUseSession = false;        ///< flag to identify if using the session class
    bool fIsOutputConstant = false;  ///< flag to identify if operator has a constant output (no need to generate code)
    
-   mutable std::vector<std::string_view> fInputTensorNames;
-   mutable std::vector<std::string_view> fOutputTensorNames;
+   mutable std::vector<std::string> fInputTensorNames;
+   mutable std::vector<std::string> fOutputTensorNames;
 
 public:
-   std::span<const std::string_view> GetOpInputTensors() const {
+   std::span<const std::string> GetOpInputTensors() const {
       return fInputTensorNames;
    }
 
-   std::span<const std::string_view> GetOpOutputTensors() const {
+   std::span<const std::string> GetOpOutputTensors() const {
       return fOutputTensorNames;
    }
 
