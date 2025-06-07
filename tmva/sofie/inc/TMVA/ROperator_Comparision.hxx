@@ -123,7 +123,6 @@ public:
                // Add an intermediate tensor for broadcasting A
                fNBroadcastedX1 = "Broadcasted" + fNX1;
                model.AddIntermediateTensor(fNBroadcastedX1, model.GetTensorType(fNX1), fShapeY);
-               fOutputTensorNames.emplace_back(fNBroadcastedX1);
             }
          }
          // Broadcast B to Y
@@ -140,7 +139,6 @@ public:
                // Add an intermediate tensor for broadcasting B
                fNBroadcastedX2 = "Broadcasted" + fNX2;
                model.AddIntermediateTensor(fNBroadcastedX2, model.GetTensorType(fNX2), fShapeY);
-               fOutputTensorNames.emplace_back(fNBroadcastedX2);
             }
          }
       } else {

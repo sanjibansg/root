@@ -263,7 +263,6 @@ public:
                // we need to add a new intermediate tensor for broadcasted bias tensor
                fNB2 = fNB + "bcast";
                model.AddIntermediateTensor(fNB2, model.GetTensorType(fNB), targetShape);
-               fOutputTensorNames.push_back(fNB2);
             }
          }
       }
