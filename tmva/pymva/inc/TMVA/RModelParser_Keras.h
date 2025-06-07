@@ -40,7 +40,7 @@ namespace TMVA{
 namespace Experimental{
 namespace SOFIE{
 
-class RModelParser_Keras{}
+class RModelParser_Keras{};
 namespace PyKeras{
 
 
