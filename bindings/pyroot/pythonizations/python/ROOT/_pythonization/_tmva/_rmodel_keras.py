@@ -149,7 +149,11 @@ def MakeKerasBatchNorm(layer):
 def MakeKerasActivation(layer):
     attributes = layer['layerAttributes']
     activation = attributes['activation']
-    fLayerActivation = str(activation.__name__)
+    if hasattr(activation, '__name__'):
+        fLayerActivation = str(activation.__name__)
+    else:
+        fLayerActivation = str(activation.__class__.__name__)
+        
     if fLayerActivation in mapKerasLayer.keys():
         return mapKerasLayer[fLayerActivation](layer)
     else:
@@ -303,7 +307,11 @@ def MakeKerasLeakyRelu(layer):
     fLayerInputName = finput[0]
     fLayerOutputName = foutput[0]
     attributes = layer['layerAttributes']
-    fAlpha = float(attributes["alpha"])
+    if hasattr(attributes, 'alpha'):
+        fAlpha = float(attributes["alpha"])
+    else:
+        fAlpha = float(attributes['activation'].alpha)
+        
     if gbl_namespace.TMVA.Experimental.SOFIE.ConvertStringToType(fLayerDType) == gbl_namespace.TMVA.Experimental.SOFIE.ETensorType.FLOAT:
         op = gbl_namespace.TMVA.Experimental.SOFIE.ROperator_LeakyRelu('float')(fAlpha, fLayerInputName, fLayerOutputName)
         return op
