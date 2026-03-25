@@ -158,7 +158,7 @@ def main():
 
    outSize = y.nelement()
    yvec = y.reshape([outSize])
-
+   print("output data: ", yvec)
 
    f = open(name + ".out", "w")
    for i in range(0,outSize):
